@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestor de Notas</title>
+    <link rel="stylesheet" href="./node_modules/bootstrap/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="./node_modules/bootstrap-icons/font/bootstrap-icons.min.css">
+</head>
+<body class="bg-light">
+
+    <nav class="navbar navbar-dark bg-dark shadow-sm mb-4">
+        <div class="container-fluid px-4">
+            <span class="navbar-brand mb-0 h1 fw-bold text-white">
+                <i class="bi bi-kanban me-2 text-info"></i>GESTOR DE NOTAS
+            </span>
+            <div class="d-flex" style="max-width: 350px; width: 100%;">
+                <div class="input-group">
+                    <span class="input-group-text bg-secondary border-secondary text-white"><i class="bi bi-search"></i></span>
+                    <input type="text" id="buscador" class="form-control bg-dark text-white border-secondary" placeholder="Buscar notas...">
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container-fluid px-4">
+        <div class="row gx-4">
+            
+            <div class="col-12 col-md-4 col-lg-3 mb-4">
+                <div class="card border-0 bg-secondary bg-opacity-10 p-3 rounded-3 sticky-top" style="top: 20px;">
+                    <h5 class="fw-bold mb-3 text-dark d-flex align-items-center">
+                        <i class="bi bi-plus-lg me-2"></i>Añadir Nota
+                    </h5>
+                    
+                    <input type="text" id="nota-titulo" class="form-control form-control-sm border-0 shadow-sm mb-2" placeholder="Título de la tarjeta...">
+                    <textarea id="nota-contenido" class="form-control form-control-sm border-0 shadow-sm mb-3" rows="5" placeholder="Introduzca un texto..."></textarea>
+                    
+                    <div class="mb-3">
+                        <label class="form-label small fw-semibold text-muted d-block mb-2">Color de etiqueta</label>
+                        <div class="d-flex flex-wrap gap-2">
+                            <input type="radio" class="btn-check" name="color-picker" id="color-blanco" value="#ffffff" checked>
+                            <label class="btn btn-light border p-0 rounded-circle shadow-sm" style="width: 28px; height: 28px;" for="color-blanco"></label>
+
+                            <input type="radio" class="btn-check" name="color-picker" id="color-amarillo" value="#fff3cd">
+                            <label class="btn btn-warning p-0 rounded-circle shadow-sm" style="width: 28px; height: 28px;" for="color-amarillo"></label>
+
+                            <input type="radio" class="btn-check" name="color-picker" id="color-azul" value="#cff4fc">
+                            <label class="btn btn-info p-0 rounded-circle shadow-sm" style="width: 28px; height: 28px;" for="color-azul"></label>
+
+                            <input type="radio" class="btn-check" name="color-picker" id="color-verde" value="#d1e7dd">
+                            <label class="btn btn-success p-0 rounded-circle shadow-sm" style="width: 28px; height: 28px;" for="color-verde"></label>
+
+                            <input type="radio" class="btn-check" name="color-picker" id="color-rojo" value="#f8d7da">
+                            <label class="btn btn-danger p-0 rounded-circle shadow-sm" style="width: 28px; height: 28px;" for="color-rojo"></label>
+                        </div>
+                    </div>
+                    
+                    <button id="btn-guardar" class="btn btn-success btn-sm fw-bold w-100 shadow-sm">Añadir Nota</button>
+                </div>
+            </div>
+
+            <div class="col-12 col-md-8 col-lg-9">
+                <div class="bg-secondary bg-opacity-10 p-3 rounded-3 min-vh-100">
+                    <div class="row row-cols-1 row-cols-sm-2 row-cols-lg-3 row-cols-xl-4 g-3" id="contenedor-notas">
+                        </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <script src="app.js" defer></script>
+</body>
+</html>
