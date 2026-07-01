@@ -60,7 +60,12 @@ btnGuardar.addEventListener('click', () => {
     const colorSeleccionado = document.querySelector('input[name="color-picker"]:checked').value;
 
     if (!titulo && !contenido) {
-        alert('Por favor, introduce un título o una descripción para la tarjeta.');
+        // REEMPLAZO: Alerta de SweetAlert en lugar del alert() nativo
+        Swal.fire({
+            icon: 'warning',
+            title: 'Campos vacíos',
+            text: 'Por favor, introduce un título o una descripción para la tarjeta.'
+        });
         return;
     }
 
@@ -74,6 +79,16 @@ btnGuardar.addEventListener('click', () => {
     notas.push(nuevaNota);
     actualizarApp();
     limpiarFormulario();
+
+    // NUEVO: Alerta de éxito al crear una nota
+    Swal.fire({
+        icon: 'success',
+        title: '¡Nota guardada!',
+        toast: true,
+        position: 'top-end',
+        showConfirmButton: false,
+        timer: 3000
+    });
 });
 
 // ==========================================
@@ -83,11 +98,12 @@ function renderizarNotas(notasParaMostrar) {
     contenedorNotas.innerHTML = '';
 
     if (notasParaMostrar.length === 0) {
+        // REEMPLAZO: Añadimos flexbox y w-100 para centrar forzosamente el contenido
         contenedorNotas.innerHTML = `
-            <div class="col-12 text-center text-muted py-5" id="estado-vacio">
+            <div class="col-12 w-100 d-flex flex-column align-items-center justify-content-center text-muted" style="min-height: 40vh;" id="estado-vacio">
                 <i class="bi bi-layout-three-columns display-3 text-black-50"></i>
-                <p class="mt-3 fs-5 mb-0 fw-semibold">No se encontraron notas</p>
-                <p class="small text-secondary">Intenta con otra búsqueda o añade una nota nueva.</p>
+                <p class="mt-3 fs-5 mb-0 fw-semibold text-center">No se encontraron notas</p>
+                <p class="small text-secondary text-center">Intenta con otra búsqueda o añade una nota nueva.</p>
             </div>
         `;
         return;
@@ -102,17 +118,17 @@ function renderizarNotas(notasParaMostrar) {
                 <div class="rounded-top" style="height: 8px; background-color: rgba(0,0,0,0.1);"></div>
                 
                 <div class="card-body d-flex flex-column p-4">
-                    <h4 class="card-title fw-bold text-dark mb-3 fs-3">${nota.titulo}</h4>
+                    <h4 class="card-title fw-bold text-dark mb-3 fs-5">${nota.titulo}</h4>
                     
-                    <p class="card-text text-dark fs-4 flex-grow-1 mb-4" style="white-space: pre-line; opacity: 0.9;">${nota.contenido}</p>
+                    <p class="card-text text-dark fs-6 flex-grow-1 mb-4" style="white-space: pre-line; opacity: 0.9;">${nota.contenido}</p>
                     
                     <div class="d-flex justify-content-between align-items-center mt-auto pt-3 border-top" style="border-color: rgba(0,0,0,0.08) !important;">
                         
-                        <button onclick="editarNota(${nota.id})" class="btn btn-sm text-primary p-0 border-0 bg-transparent fw-bold fs-5" title="Editar nota">
+                        <button onclick="editarNota(${nota.id})" class="btn btn-sm text-primary p-0 border-0 bg-transparent fw-bold" title="Editar nota">
                             <i class="bi bi-pencil-square"></i> Editar
                         </button>
 
-                        <button onclick="eliminarNota(${nota.id})" class="btn btn-sm text-danger p-0 border-0 bg-transparent fw-bold fs-5" title="Eliminar nota">
+                        <button onclick="eliminarNota(${nota.id})" class="btn btn-sm text-danger p-0 border-0 bg-transparent fw-bold" title="Eliminar nota">
                             <i class="bi bi-trash3-fill"></i> Eliminar
                         </button>
                     </div>
@@ -142,16 +158,59 @@ function editarNota(id) {
     }
 
     tituloInput.focus();
-    eliminarNota(id);
+    
+    // NUEVO: Le pasamos 'true' a eliminarNota para que NO muestre la alerta de borrado al editar
+    eliminarNota(id, true);
+
+    // NUEVO: Alerta indicando que la nota está lista para editarse
+    Swal.fire({
+        icon: 'info',
+        title: 'Modo edición',
+        text: 'Puedes modificar tu nota en el formulario.',
+        toast: true,
+        position: 'top-end',
+        showConfirmButton: false,
+        timer: 3000
+    });
 }
 
 // ==========================================
 // 7. FUNCIÓN: ELIMINAR TARJETA
 // ==========================================
-function eliminarNota(id) {
-    notas = notas.filter(nota => nota.id !== id);
-    actualizarApp();
-    filtrarNotas();
+// NUEVO: Añadimos 'omitirAlerta' por defecto en false
+function eliminarNota(id, omitirAlerta = false) {
+    if (omitirAlerta) {
+        // Lógica de eliminación silenciosa (cuando se llama desde editarNota)
+        notas = notas.filter(nota => nota.id !== id);
+        actualizarApp();
+        filtrarNotas();
+    } else {
+        // NUEVO: Alerta de confirmación al usuario antes de eliminar
+        Swal.fire({
+            title: '¿Estás seguro?',
+            text: "¡No podrás revertir esta acción!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#dc3545',
+            cancelButtonColor: '#6c757d',
+            confirmButtonText: 'Sí, eliminar',
+            cancelButtonText: 'Cancelar'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                notas = notas.filter(nota => nota.id !== id);
+                actualizarApp();
+                filtrarNotas();
+                
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Eliminada',
+                    text: 'La nota ha sido borrada.',
+                    timer: 2000,
+                    showConfirmButton: false
+                });
+            }
+        });
+    }
 }
 
 // ==========================================
